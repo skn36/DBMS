@@ -1,0 +1,64 @@
+-- Create the database and tables
+CREATE DATABASE CompanyDB;
+
+USE CompanyDB;
+
+CREATE TABLE Departments (
+    department_id INT PRIMARY KEY AUTO_INCREMENT,
+    department_name VARCHAR(255) UNIQUE NOT NULL
+);
+
+CREATE TABLE Employees (
+    employee_id INT PRIMARY KEY AUTO_INCREMENT,
+    employee_name VARCHAR(255) NOT NULL,
+    department_id INT,
+    hire_date DATE,
+    FOREIGN KEY (department_id) REFERENCES Departments(department_id)
+);
+
+-- Insert sample data
+INSERT INTO Departments (department_name) 
+VALUES ('HR'), ('Engineering'), ('Sales');
+
+INSERT INTO Employees (employee_name, department_id, hire_date) 
+VALUES 
+    ('Alice', 1, '2023-01-01'), 
+    ('Bob', 2, '2023-02-01'), 
+    ('Charlie', 3, '2023-03-01'),
+    ('Dave', 2, '2023-04-01');
+
+-- Step 1: Create a simple view showing employee names and their department names
+CREATE VIEW EmployeeDepartmentView AS
+SELECT e.employee_name, d.department_name
+FROM Employees e
+JOIN Departments d ON e.department_id = d.department_id;
+
+-- Step 2: Query the view
+SELECT * FROM EmployeeDepartmentView;
+
+-- Step 3: Update the base table through the view (this should work since the view is based on a single table with no complex operations)
+UPDATE Employees
+SET employee_name = 'Alice Smith'
+WHERE employee_id = (SELECT employee_id FROM EmployeeDepartmentView WHERE employee_name = 'Alice');
+
+-- Verify the update through the view
+SELECT * FROM EmployeeDepartmentView;
+
+-- Step 4: Create a view with restrictions on updates (using a group function)
+CREATE VIEW DepartmentEmployeeCountView AS
+SELECT d.department_name, COUNT(e.employee_id) AS employee_count
+FROM Employees e
+JOIN Departments d ON e.department_id = d.department_id
+GROUP BY d.department_name;
+
+-- This view cannot be updated because it contains a group function
+SELECT * FROM DepartmentEmployeeCountView;
+
+-- Step 5: Create a view joining multiple tables with an additional field
+CREATE VIEW ExtendedEmployeeView AS
+SELECT e.employee_name, e.hire_date, d.department_name
+FROM Employees e
+JOIN Departments d ON e.department_id = d.department_id;
+
+-- Query the view to check the result
+SELECT * FROM ExtendedEmployeeView;

@@ -1,0 +1,38 @@
+-- Step 1: Create a new database (if not already created)
+CREATE DATABASE CompanyDB;
+
+-- Step 2: Use the database
+USE CompanyDB;
+
+-- Step 3: Create the Departments table with a primary key
+CREATE TABLE Departments (
+    department_id INT PRIMARY KEY AUTO_INCREMENT,
+    department_name VARCHAR(255) NOT NULL
+);
+
+-- Step 4: Create the Employees table with a primary key and a foreign key
+CREATE TABLE Employees (
+    employee_id INT PRIMARY KEY AUTO_INCREMENT,
+    employee_name VARCHAR(255) NOT NULL,
+    department_id INT,  -- This will be our foreign key
+    FOREIGN KEY (department_id) REFERENCES Departments(department_id)
+);
+
+-- Step 5: Insert data into Departments
+INSERT INTO Departments (department_name) VALUES ('HR'), ('Engineering'), ('Sales');
+
+-- Step 6: Insert data into Employees with foreign key references
+INSERT INTO Employees (employee_name, department_id) VALUES 
+('Alice', 1),  -- HR department
+('Bob', 2),  -- Engineering department
+('Charlie', 3);  -- Sales department
+
+
+-- Step 5: Insert data into Departments
+INSERT INTO Departments (department_name) VALUES ('HR'), ('Engineering'), ('Sales');
+
+-- Step 6: Insert data into Employees with foreign key references
+INSERT INTO Employees (employee_name, department_id) VALUES 
+('Alice', 1),  -- HR department
+('Bob', 2),  -- Engineering department
+('Charlie', 3);  -- Sales department

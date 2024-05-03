@@ -1,0 +1,101 @@
+-- Create a new database
+CREATE DATABASE CompanyDB;
+
+-- Use the database
+USE CompanyDB;
+
+-- Create the Departments table with a primary key
+CREATE TABLE Departments (
+    department_id INT PRIMARY KEY AUTO_INCREMENT,
+    department_name VARCHAR(255) UNIQUE NOT NULL
+);
+
+-- Create the Employees table with a primary key and a foreign key
+CREATE TABLE Employees (
+    employee_id INT PRIMARY KEY AUTO_INCREMENT,
+    employee_name VARCHAR(255) NOT NULL,
+    department_id INT,
+    hire_date DATE,
+    FOREIGN KEY (department_id) REFERENCES Departments(department_id)
+);
+
+-- Insert sample data into Departments
+INSERT INTO Departments (department_name) VALUES ('HR'), ('Engineering'), ('Sales');
+
+-- Insert sample data into Employees
+INSERT INTO Employees (employee_name, department_id, hire_date) 
+VALUES 
+    ('Alice', 1, '2023-01-01'), 
+    ('Bob', 2, '2023-02-01'), 
+    ('Charlie', 3, '2023-03-01'),
+    ('Dave', 2, '2023-04-01');
+
+-- Relational Operators
+-- Employees belonging to the 'Engineering' department
+SELECT employee_name FROM Employees
+WHERE department_id = (SELECT department_id FROM Departments WHERE department_name = 'Engineering');
+
+-- Employees with employee_id greater than or equal to 2
+SELECT employee_name FROM Employees
+WHERE employee_id >= 2;
+
+-- Boolean Operators and Pattern Matching
+-- Employees in either HR or Engineering departments
+SELECT employee_name 
+FROM Employees 
+WHERE department_id IN (1, 2);
+
+-- Employees whose name starts with 'A'
+SELECT employee_name FROM Employees 
+WHERE employee_name LIKE 'A%';
+
+-- Employees whose name does not contain 'B'
+SELECT employee_name FROM Employees 
+WHERE employee_name NOT LIKE '%B%';
+
+-- Arithmetic Operations and Built-in Functions
+-- Calculate square of employee_id
+SELECT employee_name, employee_id * employee_id AS square_of_id 
+FROM Employees;
+
+-- Length of employee names
+SELECT employee_name, LENGTH(employee_name) AS name_length 
+FROM Employees;
+
+-- Group Functions
+-- Count the total number of employees
+SELECT COUNT(*) AS total_employees 
+FROM Employees;
+
+-- Find the average of employee_id
+SELECT AVG(employee_id) AS average_id 
+FROM Employees;
+
+-- Get the department with the maximum number of employees
+SELECT d.department_name, COUNT(e.employee_id) AS employee_count
+FROM Employees e
+JOIN Departments d ON e.department_id = d.department_id
+GROUP BY d.department_name
+ORDER BY employee_count DESC
+LIMIT 1;
+
+-- Date and Time Functions
+-- Extract year and month from hire dates
+SELECT employee_name, YEAR(hire_date) AS hire_year, MONTH(hire_date) AS hire_month 
+FROM Employees;
+
+-- Find employees hired after '2023-01-01'
+SELECT employee_name, hire_date 
+FROM Employees 
+WHERE hire_date > '2023-01-01';
+
+-- Complex Queries and Set Operators
+-- Complex query with multiple joins: Employees and their departments
+SELECT e.employee_name, d.department_name 
+FROM Employees e
+JOIN Departments d ON e.department_id = d.department_id;
+
+-- Using UNION: Combine employees from HR and Engineering
+SELECT employee_name FROM Employees WHERE department_id = 1
+UNION 
+SELECT employee_name FROM Employees WHERE department_id = 2;

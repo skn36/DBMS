@@ -1,0 +1,59 @@
+-- Step 1: Create a new database
+CREATE DATABASE OnlineCoursesDB;
+
+-- Step 2: Use the database
+USE OnlineCoursesDB;
+
+-- Step 3: Create the Instructors table
+CREATE TABLE Instructors (
+    instructor_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL
+);
+
+-- Step 4: Create the Courses table
+CREATE TABLE Courses (
+    course_id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    instructor_id INT,
+    FOREIGN KEY (instructor_id) REFERENCES Instructors(instructor_id)
+);
+
+-- Step 5: Create the Enrollments table
+CREATE TABLE Enrollments (
+    enrollment_id INT PRIMARY KEY AUTO_INCREMENT,
+    course_id INT,
+    student_name VARCHAR(255),
+    enrollment_date DATE,
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id)
+);
+
+-- Step 6: Insert sample data into Instructors
+INSERT INTO Instructors (name, email) VALUES ('John Doe', 'john.doe@example.com'), ('Jane Smith', 'jane.smith@example.com');
+
+-- Step 7: Insert sample data into Courses
+INSERT INTO Courses (title, description, instructor_id) VALUES ('SQL Basics', 'Learn the fundamentals of SQL.', 1), ('Advanced SQL', 'Deep dive into SQL techniques.', 2);
+
+-- Step 8: Insert sample data into Enrollments
+INSERT INTO Enrollments (course_id, student_name, enrollment_date) VALUES (1, 'Alice Johnson', '2024-01-01'), (2, 'Bob Brown', '2024-01-15');
+
+
+-- View all instructors
+SELECT * FROM Instructors;
+
+-- View all courses
+SELECT * FROM Courses;
+
+-- View all enrollments
+SELECT * FROM Enrollments;
+
+-- Join courses and instructors to see which instructor teaches which course
+SELECT c.title, i.name AS instructor_name
+FROM Courses c
+JOIN Instructors i ON c.instructor_id = i.instructor_id;
+
+-- Join enrollments and courses to see which student is enrolled in which course
+SELECT e.student_name, c.title AS course_title
+FROM Enrollments e
+JOIN Courses c ON e.course_id = c.course_id;
